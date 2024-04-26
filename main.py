@@ -1,120 +1,86 @@
-file = open("D:\\asd\\char_array.c", "r")
-
-
-def condition(char, token_list2):
-    for i in token_list2:
-        if i == char:
-            return True
-    return False
-
-
-token_list2 = [
-    ' ', '\n',
-    '#', '&', '%', '+', '-', '*', '/',
-    '\"', '\'', '\\', ',', '.', ';',
-    '<', '>', '{', '}', '(', ')', '[', ']',
-    '^', '&', '=', ':', '|',
-]
-lang_tokens = []
-string = ""
-for line in file:
-    for i in line:
-        if condition(i, token_list2):
-            if len(string) > 0:
-                lang_tokens.append(string)
-                string = ""
-            lang_tokens.append(i)
-        if not condition(i, token_list2):
-            string = string + i
-
-lang_tokens_name = [
-    "space", "new line",
-    'lattice', 'ampersand', 'percent', 'plus', 'minus', 'multiply', 'solidus',
-    'double quotes', 'quotation mark', 'backslash', 'comma', 'dot', 'semicolon',
-    'corner open bracket', 'corner close bracket', 'curly open bracket', 'curly closing bracket', 'open parenthesis',
-    'close parenthesis', 'square open bracket', 'square close bracket',
-    'caret', 'ampersand', 'equal', 'colon', 'vertical bar',
-]
-lang_tokens_name_result = []
-counter = 0
-for i in lang_tokens:
+class Base:
+    file = 0
+    token_list2 = []
+    lang_tokens = []
+    lang_tokens_name = []
+    lang_tokens_name_result = []
     counter = 0
-    for i2 in token_list2:
-        if i == i2:
-            temp = lang_tokens_name[counter]
-            lang_tokens_name_result.append(temp)
-        counter += 1
-    if not condition(i, token_list2):
-        if len(i) > 1:
-            lang_tokens_name_result.append("word")
-        if len(i) == 1:
-            lang_tokens_name_result.append("character")
-
-
-def print_correct(lang_tokens_name_result):
-    counter = 0
-    for i in lang_tokens_name_result:
-        if i == "new line":
-            print(i, end='\n')
-        else:
-            print(i, end='---')
-
-
-def get_name_and_value_token(numerated_list, count):
-    return numerated_list[0][count], numerated_list[1][count]
-
-
-def union_name_and_value(lang_tokens_name_result, lang_tokens):
     result_list = []
-    counter = 0
-    while counter < len(lang_tokens_name_result) and counter < len(lang_tokens):
-        temp_list = [lang_tokens_name_result[counter], lang_tokens[counter]]
-        result_list.append(temp_list)
-        counter += 1
-    return result_list
+    tokens_result_list = []
+
+    def __init__(self):
+        self.file = open("D:\\asd\\char_array.c", "r")
+        self.token_list2 = [
+            ' ', '\n',
+            '#', '&', '%', '+', '-', '*', '/',
+            '\"', '\'', '\\', ',', '.', ';',
+            '<', '>', '{', '}', '(', ')', '[', ']',
+            '^', '&', '=', ':', '|',
+        ]
+        self.lang_tokens_name = [
+            "space", "new line",
+            'lattice', 'ampersand', 'percent', 'plus', 'minus', 'multiply', 'solidus',
+            'double quotes', 'quotation mark', 'backslash', 'comma', 'dot', 'semicolon',
+            'corner open bracket', 'corner close bracket', 'curly open bracket', 'curly closing bracket', 'open parenthesis',
+            'close parenthesis', 'square open bracket', 'square close bracket',
+            'caret', 'ampersand', 'equal', 'colon', 'vertical bar',
+        ]
+
+    def condition(self, char):
+        for i in self.token_list2:
+            if i == char:
+                return True
+        return False
+
+    def work(self):
+        string = ""
+        for line in self.file:
+            for i in line:
+                if self.condition(i):
+                    if len(string) > 0:
+                        self.lang_tokens.append(string)
+                        string = ""
+                    self.lang_tokens.append(i)
+                if not self.condition(i):
+                    string = string + i
+        return self
+
+    def work2(self):
+        for i in self.lang_tokens:
+            self.counter = 0
+            for i2 in self.token_list2:
+                if i == i2:
+                    temp = self.lang_tokens_name[self.counter]
+                    self.lang_tokens_name_result.append(temp)
+                self.counter += 1
+            if not self.condition(i):
+                if len(i) > 1:
+                    self.lang_tokens_name_result.append("word")
+                if len(i) == 1:
+                    self.lang_tokens_name_result.append("character")
+        return self
+
+    def union_name_and_value(self):
+        self.counter = 0
+        while self.counter < len(self.lang_tokens_name_result) and self.counter < len(self.lang_tokens):
+            temp_list = [self.lang_tokens_name_result[self.counter], self.lang_tokens[self.counter]]
+            self.result_list.append(temp_list)
+            self.counter += 1
+        self.tokens_result_list = self.result_list
+        return self
+
+    def print_correct(self):
+        self.counter = 0
+        for i in self.lang_tokens_name_result:
+            if i == "new line":
+                print(i, end='\n')
+            else:
+                print(i, end='---')
+
+    def __del__(self):
+        self.file.close()
 
 
-tokens_result_list = union_name_and_value(lang_tokens_name_result, lang_tokens)
-
-
-def move_next(tokens_result_list, pointer):
-    pointer += 1
-    if pointer >= len(tokens_result_list) - 1:
-        pointer = len(tokens_result_list) - 1
-    return pointer
-
-
-def move_next_count(tokens_result_list, pointer, count):
-    pointer += count
-    if pointer >= len(tokens_result_list) - 1:
-        pointer = len(tokens_result_list) - 1
-    return pointer
-
-
-def move_back(tokens_result_list, pointer):
-    pointer -= 1
-    if pointer <= 0:
-        pointer = 0
-    return pointer
-
-
-def move_back_count(tokens_result_list, pointer, count):
-    pointer -= count
-    if pointer <= 0:
-        pointer = 0
-    return pointer
-
-
-def get_tokens_list(tokens_result_list, pointer):
-    return tokens_result_list[pointer]
-
-
-pointer = 0
-
-pointer = move_next(tokens_result_list, pointer)
-pointer = move_next(tokens_result_list, pointer)
-print(get_tokens_list(tokens_result_list, pointer))
-pointer = 0
 lexems_list = [
     ["comments", [
         "one line comment", "//",
@@ -177,6 +143,9 @@ lexems_list = [
         "less or equal", "<="
     ]]
 ]
+
+base = Base()
+base.work().work2().union_name_and_value()
 
 
 class Token:
@@ -362,12 +331,10 @@ class Token:
 # Сделать навигацию по полученному
 # Описать набор правил языка
 
-token = Token(tokens_result_list)
+token = Token(base.tokens_result_list)
 
 token.split_lines().switch_results_lists().print_lines(False).set_default()
 
 
 while token.lines_condition:
     token.lines_print_current_line().lines_next()
-
-file.close()
