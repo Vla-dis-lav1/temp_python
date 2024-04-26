@@ -1,33 +1,23 @@
-class Base:
-    file = 0
-    token_list2 = []
-    lang_tokens = []
-    lang_tokens_name = []
-    lang_tokens_name_result = []
-    counter = 0
-    result_list = []
-    tokens_result_list = []
+import tokens_list
 
-    def __init__(self):
-        self.file = open("D:\\asd\\char_array.c", "r")
-        self.token_list2 = [
-            ' ', '\n',
-            '#', '&', '%', '+', '-', '*', '/',
-            '\"', '\'', '\\', ',', '.', ';',
-            '<', '>', '{', '}', '(', ')', '[', ']',
-            '^', '&', '=', ':', '|',
-        ]
-        self.lang_tokens_name = [
-            "space", "new line",
-            'lattice', 'ampersand', 'percent', 'plus', 'minus', 'multiply', 'solidus',
-            'double quotes', 'quotation mark', 'backslash', 'comma', 'dot', 'semicolon',
-            'corner open bracket', 'corner close bracket', 'curly open bracket', 'curly closing bracket', 'open parenthesis',
-            'close parenthesis', 'square open bracket', 'square close bracket',
-            'caret', 'ampersand', 'equal', 'colon', 'vertical bar',
-        ]
+
+class Base:
+    file = None
+    tokens_name = []
+    tokens_value = []
+    tokens1 = []
+    tokens2 = []
+    tokens3 = []
+    tokens4 = []
+    counter = 0
+
+    def __init__(self, file_name, modifier):
+        self.file = open(file_name, modifier)
+        self.tokens_name = tokens_list.tokens_name
+        self.tokens_value = tokens_list.tokens_value
 
     def condition(self, char):
-        for i in self.token_list2:
+        for i in self.tokens_value:
             if i == char:
                 return True
         return False
@@ -35,116 +25,45 @@ class Base:
     def work(self):
         string = ""
         for line in self.file:
-            for i in line:
-                if self.condition(i):
+            for current_char in line:
+                if self.condition(current_char):
                     if len(string) > 0:
-                        self.lang_tokens.append(string)
+                        self.tokens1.append(string)
                         string = ""
-                    self.lang_tokens.append(i)
-                if not self.condition(i):
-                    string = string + i
+                    self.tokens1.append(current_char)
+                if not self.condition(current_char):
+                    string = string + current_char
         return self
 
     def work2(self):
-        for i in self.lang_tokens:
+        for i in self.tokens1:
             self.counter = 0
-            for i2 in self.token_list2:
+            for i2 in self.tokens_value:
                 if i == i2:
-                    temp = self.lang_tokens_name[self.counter]
-                    self.lang_tokens_name_result.append(temp)
+                    temp = self.tokens_name[self.counter]
+                    self.tokens2.append(temp)
                 self.counter += 1
             if not self.condition(i):
                 if len(i) > 1:
-                    self.lang_tokens_name_result.append("word")
+                    self.tokens2.append("word")
                 if len(i) == 1:
-                    self.lang_tokens_name_result.append("character")
+                    self.tokens2.append("character")
         return self
 
     def union_name_and_value(self):
         self.counter = 0
-        while self.counter < len(self.lang_tokens_name_result) and self.counter < len(self.lang_tokens):
-            temp_list = [self.lang_tokens_name_result[self.counter], self.lang_tokens[self.counter]]
-            self.result_list.append(temp_list)
+        while self.counter < len(self.tokens2) and self.counter < len(self.tokens1):
+            temp_list = [self.tokens2[self.counter], self.tokens1[self.counter]]
+            self.tokens3.append(temp_list)
             self.counter += 1
-        self.tokens_result_list = self.result_list
+        self.tokens4 = self.tokens3
         return self
-
-    def print_correct(self):
-        self.counter = 0
-        for i in self.lang_tokens_name_result:
-            if i == "new line":
-                print(i, end='\n')
-            else:
-                print(i, end='---')
 
     def __del__(self):
         self.file.close()
 
 
-lexems_list = [
-    ["comments", [
-        "one line comment", "//",
-        "open multi-line comment", "/*",
-        "close multi-line comment", "*/"
-    ]],
-    ["preprocessor", [
-        "begin preprocessor instruction", "#",
-        "preprocessor include", "include", [
-            "open include bracket base libs", "<", "close include bracket base libs", ">",
-            "open include bracket user libs", "\"", "close include bracket user libs", "\""
-        ],
-        "preprocessor define", "define"
-    ]],
-    ["string", [
-        "string open bracket", "\"", "string close bracket", "\""
-    ]],
-    ["code block open bracket", "{", "code block close bracket", "}"],
-    ["base datatypes", [
-        "char", "unsigned char", "short", "unsigned short", "int", "unsigned int", "long", "unsigned long",
-        "long long", "unsigned long long", "float", "double"
-    ]],
-    ["language keywords", [
-        ["if statement", "if"],
-        ["switch statement", "switch", "into", [
-            "name", "case", "into", [
-                "name", "break"
-            ]
-        ]],
-        ["cycle statement", "for", "into", [
-            "name", "continue",
-            "name", "break"
-        ]],
-        ["cycle statement", "while", "into", [
-            "name", "continue",
-            "name", "break"
-        ]],
-        ["special", "extern"],
-        ["name", "namespace"],
-        ["name", "class"],
-        ["name", "object"],
-        ["name", "sizeof"],
-        ["name", "register"],
-        ["name", "public"],
-        ["name", "private"]
-    ]],
-    ["base operators", [
-        "plus", "+",
-        "minus", "-",
-        "multiply", "*",
-        "divide", "/",
-        "plus and =", "+=",
-        "minus and =", "-=",
-        "multiply and =", "*=",
-        "divide and =", "/=",
-        "equal", "==",
-        "more", ">",
-        "more or equal", ">=",
-        "less", "<",
-        "less or equal", "<="
-    ]]
-]
-
-base = Base()
+base = Base("D:\\asd\\char_array.c", "r")
 base.work().work2().union_name_and_value()
 
 
@@ -323,18 +242,6 @@ class Token:
         return self
 
 
-# Упростить код
-# Добавить работу с линиями кода
-# Добавить вложенность класса в класс (token по работе с парами данных вложить в lines)
-# Разбить на блоки кода
-# Добавить в класс работу с блоками кода
-# Сделать навигацию по полученному
-# Описать набор правил языка
+# token = Token(base.tokens4)
 
-token = Token(base.tokens_result_list)
-
-token.split_lines().switch_results_lists().print_lines(False).set_default()
-
-
-while token.lines_condition:
-    token.lines_print_current_line().lines_next()
+# token.split_lines().switch_results_lists().print_lines(False).set_default()
