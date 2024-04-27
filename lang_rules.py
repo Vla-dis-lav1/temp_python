@@ -1,4 +1,4 @@
-condition = [
+if_else = [
     'if', 'start', 'condition', 'end',
     'open-block',
     'instructions...',
@@ -7,6 +7,10 @@ condition = [
     'open-block',
     'instructions...',
     'close-block',
+]
+
+switch = [
+    #
 ]
 
 looops = [
@@ -25,4 +29,12 @@ looops = [
     'instructions...',
     'close-block',
     'while', 'start', 'condition', 'end',
+]
+
+variables = [
+    #
+]
+
+std_funcs = [
+    #
 ]
