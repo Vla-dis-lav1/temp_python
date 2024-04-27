@@ -1,31 +1,6 @@
 import tokens_list
 
 
-class Cycle:
-    pointer = 0
-    temp = False
-
-    def start_cycle(self):
-        self.temp = True
-        return self
-
-    def stop_cycle(self):
-        self.temp = False
-        return self
-
-    def __init__(self):
-        self.pointer = 0
-        self.start_cycle()
-
-    def next(self, count=1):
-        self.pointer += count
-        return self
-
-    def back(self, count=1):
-        self.pointer -= count
-        return self
-
-
 def is_char_list_contain_current_char(current_char, list_to_check):
     for char in list_to_check:
         if char == current_char:
@@ -50,8 +25,45 @@ class Token:
     tokens_name_result = []
     tokens_value_result = []
     tokens_name_and_value_result = []
-    tokens_lines = []
-    tokens_blocks = []
+    positions = []
+
+    pointer = 0
+    current_list = []
+    length = 0
+    cycle_condition = False
+    iterated_list = []
+
+    def set_current_list(self):
+        self.current_list = self.iterated_list[self.pointer]
+        return self
+
+    def next(self, count=1):
+        self.pointer += count
+        if self.pointer >= self.length - 1:
+            self.stop_cycle()
+        self.set_current_list()
+        return self
+
+    def back(self, count=1):
+        self.pointer -= count
+        if self.pointer <= 0:
+            self.pointer = 0
+        self.set_current_list()
+        return self
+
+    def set_iterated_list(self, value):
+        self.iterated_list = value
+        self.length = len(self.iterated_list)
+        self.set_current_list()
+        return self
+
+    def stop_cycle(self):
+        self.cycle_condition = False
+        return self
+
+    def start_cycle(self):
+        self.cycle_condition = True
+        return self
 
     def __init__(self, file_name, modifier):
         self.file = open(file_name, modifier)
@@ -88,63 +100,45 @@ class Token:
     def union_names_and_values(self):
         counter = 0
         for i in self.tokens_value_result:
-            temp_list = [self.tokens_value_result[counter], self.tokens_name_result[counter]]
-            self.tokens_name_and_value_result.append(temp_list)
+            self.tokens_name_and_value_result.append(
+                [self.tokens_value_result[counter], self.tokens_name_result[counter]]
+            )
             counter += 1
         return self
 
-    def split_lines(self):
-        temp_list = []
-        for i in self.tokens_name_and_value_result:
-            if i[0] == "new line":
-                temp_list.append(i)
-                self.tokens_lines.append(temp_list)
-                temp_list = []
-            else:
-                temp_list.append(i)
+    def split_brackets(self):
+        pointer = 0
+        for token in self.tokens_name_and_value_result:
+            if token[0] == "left curly brace" or token[0] == "right curly brace":
+                self.positions.append(
+                    [pointer, token]
+                )
+            pointer += 1
         return self
 
-    def split_blocks(self):
-        block = []
-        counter = 0
-        last_counter = counter
-        for line in self.tokens_lines:
-            for token in line:
-                if token[0] == "left curly brace":
-                    last_counter = counter
-                    counter += 1
-                elif token[0] == "right curly brace":
-                    last_counter = counter
-                    counter -= 1
-                if counter > 0:
-                    block.append(token)
-                elif last_counter > 0:
-                    block.append(token)
-                    self.tokens_blocks.append(block)
-                    block = []
-                    last_counter = 0
+    def work(self):
+        self.set_iterated_list(self.positions)
+        self.start_cycle()
+        while self.cycle_condition:
+            print(self.current_list)
+            self.next()
         return self
 
-    def print_tokens(self):
+    def print_split_tokens(self):
         print(self.tokens_name_result)
         return self
 
-    def print_tokens2(self):
+    def print_add_names(self):
         print(self.tokens_value_result)
         return self
 
-    def print_tokens3(self):
+    def print_union_names_and_values(self):
         print(self.tokens_name_and_value_result)
         return self
 
-    def print_lines(self):
-        for line in self.tokens_lines:
-            print(line)
-        return self
-
-    def print_blocks(self):
-        for block in self.tokens_blocks:
-            print(block)
+    def print_split_brackets(self):
+        for element in self.positions:
+            print(element)
         return self
 
     def __del__(self):
@@ -152,5 +146,5 @@ class Token:
 
 
 token = Token("D:\\asd\\char_array.c", "r")
-token.split_tokens().add_names().union_names_and_values().split_lines().split_blocks()
-token.print_blocks()
+token.split_tokens().add_names().union_names_and_values().split_brackets().work()
+# token.print_split_brackets()
