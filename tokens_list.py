@@ -1,4 +1,4 @@
-tokens_name = [
+tokens_value = [
     ' ', '\n',
     '#', '&', '%',
     '+', '-', '*',
@@ -13,7 +13,7 @@ tokens_name = [
     '^', ':'
 ]
 
-tokens_value = [
+tokens_name = [
     "space", "new line",
     'sharp', 'ampersand', 'percent',
     'plus', 'minus', 'multiply',
