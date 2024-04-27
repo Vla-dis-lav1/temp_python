@@ -176,6 +176,6 @@ class Token:
         self.file.close()
 
 
-token = Token("D:\\asd\\char_array.c", "r")
+token = Token("char_array.c", "r")
 token.split_tokens().add_names().union_names_and_values().split_blocks()
 # token.print_union_names_and_values()
