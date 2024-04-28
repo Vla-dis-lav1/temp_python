@@ -1,5 +1,8 @@
 import tokens_list
 
+path = "char_array.c"
+modifier = "r"
+
 
 def is_char_list_contain_current_char(current_char, list_to_check):
     for char in list_to_check:
@@ -178,180 +181,138 @@ class Token:
         self.file.close()
 
 
-token = Token("char_array.c", "r")
-token.split_tokens().add_names().union_names_and_values().split_blocks()
-token.print_split_blocks()
-
-# Сделать AST - абстрактное дерево для удобной навигации по коду
-# Формат (конкретный формат) хранения данных в памяти не важен
-# Важно чтобы по коду было удобно перещаться (вперед-назад/вверх-вниз)
-# Далее в соответствии с правилами языка проверить корректность выражений
-# Сделать динамический проход по данным
-# Далее сгенерировать код на си (выходной)
-
-name = [
-    'new line'
-]
-value = [
-    '\n'
-]
-position_line = [
-    '1'
-]
-position_char_into_line = [
-    '1'
-]
-size = [
-    1
-]
-characteristics = [
-    'char'
-]
-
-data = [
-    'token', [
-        ['name', 'new line'],
-        ['value', '\n'],
-        ['position_line', '1'],
-        ['position_char_into_line', 'new line'],
-        ['size', '1'],
-        ['characteristics', 'char'],
-    ]
-]
-
-
-class Hello:
-    pointer = 0
-
-    @property
-    def length(self):
-        return self._length
-
-    @length.setter
-    def length(self, value):
-        self._length = value
-
-    def __init__(self):
-        self.length = 0
-
-    def __del__(self):
-        self.length = None
+# token = Token("char_array.c", "r")
+# token.split_tokens().add_names().union_names_and_values().split_blocks()
+# token.print_split_blocks()
 
 
 class File:
-    _file = None
-    _path = ""
-    _modifier = ""
+    file = None
 
-    def __init__(self, path='', modifier='r'):
-        if path != '':
-            self._path = path
-            self._modifier = modifier
-            self._file = open(self._path, self._modifier)
-
-    def set_path(self, path):
-        self._path = path
-        return self
-
-    def set_modifier(self, modifier='r'):
-        self._modifier = modifier
-        return self
-
-    def open_file(self):
-        self._file = open(self._path, self._modifier)
-        return self
-
-    def __del__(self):
-        if self._file is not None:
-            self._file.close()
-
-
-file = File()
-
-
-class Example:
-    list1 = []
-    pointer_list1 = 0
-
-    list2 = []
-    pointer_list2 = 0
-
-    list3 = []
-    pointer_list3 = 0
-
-    list4 = []
-    pointer_list4 = 0
-
-    iterated_list = None
-    iterated_list_length = 0
-    iterated_list_pointer = 0
-    iterated_list_current_data = None
-    iterated_list_cycle_condition = False
-
-    def set_iterated_list(self, value):
-        self.iterated_list = value
-        self.update_length()
-        return self
-
-    def get_iterated_list(self):
-        return self.iterated_list
-
-    def update_length(self):
-        self.iterated_list_length = len(self.get_iterated_list())
-        return self
-
-    def get_length(self):
-        return self.iterated_list_length
-
-    def set_pointer(self, value=0):
-        self.iterated_list_pointer = value
-        return self
-
-    def get_pointer(self):
-        return self.iterated_list_pointer
-
-    def set_current_data(self, value):
-        self.iterated_list_current_data = value
-        return self
-
-    def get_current_data(self):
-        return self.iterated_list_current_data
-
-    def start_cycle(self):
-        self.iterated_list_cycle_condition = True
-        return self
-
-    def stop_cycle(self):
-        self.iterated_list_cycle_condition = False
-        return self
+    file_name = ""
+    modifier = ""
 
     def __init__(self):
         pass
 
-    def go_next(self, count=1):
-        self.set_pointer(
-            self.get_pointer() + count
-        )
-        if self.get_pointer() >= self.get_length() - 1:
-            self.set_pointer(self.get_length() - 1)
+    def set_file_name(self, value):
+        self.file_name = value
         return self
 
-    def go_back(self, count=1):
-        self.set_pointer(
-            self.get_pointer() - count
-        )
-        if self.get_pointer() < 0:
-            self.set_pointer(0)
+    def set_modifier(self, value):
+        self.modifier = value
         return self
 
-    def go_down(self, count=1):
-        pass
+    def open_file(self):
+        if self.file_name != "" or self.file_name is not None:
+            if self.modifier != "" or self.modifier is not None:
+                self.file = open(self.file_name, self.modifier)
+        return self
 
-    def go_up(self, count=1):
-        pass
+    def get_file(self):
+        return self.file
 
-    def go_over(self, count=1):
-        pass
+    def print_file_data(self):
+        for line in self.get_file():
+            print(line, end='')
+        return self
 
-    def go_out(self, count=1):
-        pass
+    def __del__(self):
+        self.file.close()
+
+
+file = File()
+file.set_file_name(path).set_modifier(modifier).open_file().print_file_data()
+
+
+class Cycle:
+    cycle_condition = False
+    pointer = 0
+    iterated_value = []
+    length = 0
+    current_value = []
+    current_value_length = []
+
+    def __init__(self):
+        self.start_cycle()
+
+    def start_cycle(self):
+        self.cycle_condition = True
+        return self
+
+    def stop_cycle(self):
+        self.cycle_condition = False
+        return self
+
+    def set_pointer(self, value):
+        self.pointer = value
+        self.update_current_value()
+        return self
+
+    def get_pointer(self):
+        return self.pointer
+
+    def next(self, count=1):
+        self.set_pointer(self.get_pointer() + count)
+        return self
+
+    def back(self, count=1):
+        self.set_pointer(self.get_pointer() - count)
+        return
+
+    def set_iterated_value(self, value):
+        self.iterated_value = value
+        self.update_length()
+        self.set_pointer(0)
+        self.update_current_value()
+        return self
+
+    def get_iterated_value(self, value):
+        return self.iterated_value
+
+    def update_length(self):
+        self.length = len(self.iterated_value)
+        return
+
+    def get_length(self):
+        return self.length
+
+    def update_current_value(self):
+        self.current_value = self.iterated_value[self.pointer]
+        self.update_current_value_length()
+        return self
+
+    def set_value(self, value):
+        self.current_value = value
+        return self
+
+    def get_current_value(self):
+        return self.current_value
+
+    def update_current_value_length(self):
+        self.current_value_length = len(self.get_current_value())
+        return self
+
+    def get_current_value_length(self):
+        return self.current_value_length
+
+
+class Setter:
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
+
+    def __init__(self, value=0):
+        self.value = value
+
+    def print_value(self):
+        print(self.value)
+
+
+setter = Setter()
+setter.print_value()
