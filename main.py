@@ -1,5 +1,18 @@
 import tokens_list
 import start_data
+import lang_rules
+# token
+import src.file
+import src.lists
+import src.ast
+import src.cycle
+import src.token
+
+inter = src.ast.InterfaceNamedPair()
+cycle = src.cycle.Cycle()
+lists = src.lists.Lists()
+file = src.file.File()
+token = src.token.Token()
 
 path = "char_array.c"
 modifier = "r"
@@ -219,6 +232,10 @@ class FileSettings:
                 raise Exception('modifier = None')
 
 
+class GetInfo(FileSettings):
+    pass
+
+
 class FileBase:
     file_settings = None
     file = None
@@ -262,6 +279,34 @@ class FilePrint:
         return self
 
 
+class FileData:
+    file_base = None
+    file_data_row = None
+
+    def __init__(self, file_base=FileBase()):
+        self.file_base = file_base
+
+    def read_file_data(self):
+        self.file_data_row = self.file_base.get_file().read()
+        return self
+
+    def get_file_data_row(self):
+        return self.file_data_row
+
+
+class FileDataPrint:
+    file_data_object = None
+
+    def __init__(self, file_data=FileData(), value=False, end=''):
+        self.file_data_object = file_data
+        if value:
+            self.print_file_data(end)
+
+    def print_file_data(self, end=''):
+        print(self.file_data_object.get_file_data_row(), end=end)
+        return self
+
+
 # file_settings = FileSettings().set_file_name(path).set_modifier(modifier)
 # file_base = FileBase(file_settings).open_file()
 # file_print = FilePrint(file_base).print_all_file_data()
@@ -270,24 +315,12 @@ FilePrint(
     FileBase(
         FileSettings().set_file_name(start_data.path).set_modifier(start_data.modifier)
     ).open_file()
-).print_all_file_data()
+)  # .print_all_file_data()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+file_data = FileData(
+    FileBase(
+        FileSettings().set_file_name(start_data.path).set_modifier(start_data.modifier)
+    ).open_file()
+).read_file_data()
+# file_data_print = FileDataPrint(file_data).print_file_data()
+FileDataPrint(file_data, True)
