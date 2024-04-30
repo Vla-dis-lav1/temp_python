@@ -1,4 +1,5 @@
 import tokens_list
+import start_data
 
 path = "char_array.c"
 modifier = "r"
@@ -186,14 +187,13 @@ class Token:
 # token.print_split_blocks()
 
 
-class File:
-    file = None
+class FileSettings:
+    file_name = None
+    modifier = None
 
-    file_name = ""
-    modifier = ""
-
-    def __init__(self):
-        pass
+    def __init__(self, file_name=None, modifier=None):
+        self.file_name = file_name
+        self.modifier = modifier
 
     def set_file_name(self, value):
         self.file_name = value
@@ -203,116 +203,91 @@ class File:
         self.modifier = value
         return self
 
-    def open_file(self):
-        if self.file_name != "" or self.file_name is not None:
-            if self.modifier != "" or self.modifier is not None:
-                self.file = open(self.file_name, self.modifier)
-        return self
+    def get_file_name(self):
+        return self.file_name
+
+    def get_modifier(self):
+        return self.modifier
+
+    def check(self):
+        if self.file_name is None or self.modifier is None:
+            if self.file_name is None:
+                print('file_name = None')
+                raise Exception('file_name = None')
+            if self.modifier is None:
+                print('modifier = None')
+                raise Exception('modifier = None')
+
+
+class FileBase:
+    file_settings = None
+    file = None
 
     def get_file(self):
         return self.file
 
-    def print_file_data(self):
-        for line in self.get_file():
-            print(line, end='')
+    def get_file_settings(self):
+        return self.file_settings
+
+    def __init__(self, file_settings=FileSettings()):
+        self.file_settings = file_settings
+
+    def open_file(self):
+        self.file_settings.check()
+        self.file = open(self.file_settings.get_file_name(), self.file_settings.get_modifier())
+        return self
+
+    def close_file(self):
+        if self.file is not None:
+            # print('file')
+            self.file.close()
+        else:
+            # print('file = None')
+            pass
         return self
 
     def __del__(self):
-        self.file.close()
+        self.close_file()
 
 
-file = File()
-file.set_file_name(path).set_modifier(modifier).open_file().print_file_data()
+class FilePrint:
+    file_base = None
 
+    def __init__(self, file_base=FileBase()):
+        self.file_base = file_base
 
-class Cycle:
-    cycle_condition = False
-    pointer = 0
-    iterated_value = []
-    length = 0
-    current_value = []
-    current_value_length = []
-
-    def __init__(self):
-        self.start_cycle()
-
-    def start_cycle(self):
-        self.cycle_condition = True
+    def print_all_file_data(self):
+        for line in self.file_base.get_file():
+            print(line, end='')
         return self
 
-    def stop_cycle(self):
-        self.cycle_condition = False
-        return self
 
-    def set_pointer(self, value):
-        self.pointer = value
-        self.update_current_value()
-        return self
-
-    def get_pointer(self):
-        return self.pointer
-
-    def next(self, count=1):
-        self.set_pointer(self.get_pointer() + count)
-        return self
-
-    def back(self, count=1):
-        self.set_pointer(self.get_pointer() - count)
-        return
-
-    def set_iterated_value(self, value):
-        self.iterated_value = value
-        self.update_length()
-        self.set_pointer(0)
-        self.update_current_value()
-        return self
-
-    def get_iterated_value(self, value):
-        return self.iterated_value
-
-    def update_length(self):
-        self.length = len(self.iterated_value)
-        return
-
-    def get_length(self):
-        return self.length
-
-    def update_current_value(self):
-        self.current_value = self.iterated_value[self.pointer]
-        self.update_current_value_length()
-        return self
-
-    def set_value(self, value):
-        self.current_value = value
-        return self
-
-    def get_current_value(self):
-        return self.current_value
-
-    def update_current_value_length(self):
-        self.current_value_length = len(self.get_current_value())
-        return self
-
-    def get_current_value_length(self):
-        return self.current_value_length
+# file_settings = FileSettings().set_file_name(path).set_modifier(modifier)
+# file_base = FileBase(file_settings).open_file()
+# file_print = FilePrint(file_base).print_all_file_data()
+# Кратко то же самое
+FilePrint(
+    FileBase(
+        FileSettings().set_file_name(start_data.path).set_modifier(start_data.modifier)
+    ).open_file()
+).print_all_file_data()
 
 
-class Setter:
-
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
-    def value(self, value):
-        self._value = value
-
-    def __init__(self, value=0):
-        self.value = value
-
-    def print_value(self):
-        print(self.value)
 
 
-setter = Setter()
-setter.print_value()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
