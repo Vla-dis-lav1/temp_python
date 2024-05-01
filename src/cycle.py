@@ -20,7 +20,8 @@ class First2:
         self.first1 = first
 
 
-
+class Cycle:
+    pass
 
 
 

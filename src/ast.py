@@ -122,12 +122,12 @@ class AST(AbstractSyntaxTree):
         super().__init__()
 
 
-AST().set_pair(
-    [
-        ['test', 'hello'],
-        ['test', 'hello']
-    ]
-).print_pair().print_name().print_value()
+# AST().set_pair(
+#     [
+#         ['test', 'hello'],
+#         ['test', 'hello']
+#     ]
+# ).print_pair().print_name().print_value()
 
 
 
