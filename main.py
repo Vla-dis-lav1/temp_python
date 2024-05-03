@@ -27,7 +27,6 @@ import src.ast
 import src.cycle
 import src.token
 
-
 inter = src.ast.InterfaceNamedPair()
 cycle = src.cycle.Cycle()
 file = src.file.File()
@@ -222,10 +221,10 @@ token.split_tokens().add_names().union_names_and_values()
 pair_list = token.tokens_name_and_value
 
 global_position = []
-line = []
+line_position = []
 symbol_start_end = []
 size = []
-
+line_begin_end = []
 
 counter = 0
 for pair in pair_list:
@@ -244,49 +243,25 @@ for i in symbol_start_end:
     size.append(
         int(i[1]) - int(i[0]) + 1
     )
-
+# ---------------------------line-------------------------------#
+counter = 0
 for pair in pair_list:
+    counter += 1
     if pair[1] == '\n':
-        pass
+        line_position.append(counter)
+
+line_empty = []
+if line_position[0] == 1:
+    line_empty.append('empty')
+else:
+    line_empty.append('non empty')
+print(line_empty)
+
+counter = 0
+while counter < len(line_position):
+    counter += 1
 
 # print(global_position)
 # print(symbol_start_end)
-print(size)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# print(size)
+print(line_position)
